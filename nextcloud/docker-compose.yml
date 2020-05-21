@@ -1,0 +1,48 @@
+#Docker Compose Nextcloud
+#Gnetw
+
+version: '3.5'
+
+networks:
+    traefik:
+        name: traefik
+    back: 
+        name: back
+services:
+
+    nextcloud:
+        image: nextcloud
+        container_name: nextcloud
+        restart: unless-stopped
+        links:
+        - mariadb
+        depends_on: 
+        - mariadb
+        volumes:
+        - ./nc_data:/var/www/html
+        networks:
+        - back
+        - traefik
+        labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.cloud.rule=Host(`cloud.labo.local`)"
+        - "traefik.http.routers.cloud.entryPoints=https,http"
+        - "traefik.http.routers.cloud.tls=true"
+        - "traefik.http.routers.cloud.service=nextcloud"
+        - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
+        - "traefik.http.middlewares.httpd-security.headers.STSSeconds=315360000"
+
+    mariadb:
+        image: mariadb
+        container_name: mariadb
+        restart: unless-stopped
+        command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+        networks:
+        - back
+        volumes:
+        - ./db_data:/var/lib/mysql
+        environment:
+        - MYSQL_ROOT_PASSWORD=
+        - MYSQL_PASSWORD=
+        - MYSQL_DATABASE=
+        - MYSQL_USER=
