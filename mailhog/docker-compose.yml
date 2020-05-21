@@ -1,0 +1,19 @@
+version: '3.5'
+
+networks:
+  back: 
+    name: back
+
+services:
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog_app 
+    restart: unless_stopped
+    command: ["-storage=maildir", "-maildir-path=/maildir"]
+    volumes:
+      - ./mh_data:/maildir
+    networks:
+      - back
+    ports:
+      - 1025:1025 # smtp server 
+      - 8025:8025 # web ui

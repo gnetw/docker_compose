@@ -1,0 +1,16 @@
+global:
+    smtp_smarthost: 'mailhog:1025'
+    smtp_from: '' #expeditor
+    smtp_require_tls: false
+
+route:
+    receiver: 'alert-mails'
+    group_wait: 30s #attends 30 sec après une première alerte pour éventuellement en grouper d'autres
+    group_interval: 1m #temps d'attente minimal entre deux e-mails
+    repeat_interval: 1h #avant le renvoi d'un mail pour la même alerte
+
+receivers:
+  - name: 'alert-mails'
+    email_configs:
+    - to: 'dest@labo.local'
+

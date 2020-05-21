@@ -1,0 +1,19 @@
+groups:
+    - name: General
+      rules:
+      - alert: InstanceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance {{ $labels.instance }} is down"
+          description: "This Job: {{ $labels.job }} announce that {{ $labels.instance}} is down from 1 minute."
+      - alert: DiskFull
+        expr: node_filesystem_free_bytes / 1024 / 1024 / 1024 < 10
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "There is less than 10G on {{ $labels.instance }}"
+          description: "There are still {{ $value }}"
