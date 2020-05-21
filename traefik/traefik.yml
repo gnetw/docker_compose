@@ -1,0 +1,43 @@
+providers:
+    docker:
+        endpoint: "unix:///var/run/docker.sock"
+        exposedByDefault: false
+        network: traefik
+    file:
+        filename: traefik_dynamic.yml
+        watch: true
+
+entryPoints:
+    dashboard:
+        address: ":8080"
+    http:
+        address: ":80"
+        http:
+            redirections:
+                entryPoint:
+                    to: https
+                    scheme: https
+    https:
+        address: ":443"
+        
+metrics:
+    prometheus:
+        buckets:
+            - 0.1
+            - 0.3
+            - 1.2
+            - 5.0
+        entryPoint: dashboard
+
+api:
+    dashboard: true
+
+log:
+    level: ERROR
+
+accessLog:
+    filePath: "/var/log/access.log"
+    bufferingSize: 5
+    filters:    
+        statusCodes:
+            - "400-499"

@@ -1,0 +1,22 @@
+http:
+    middlewares:
+        pageauth:
+            basicAuth:
+                users:
+                    - "admin:$apr1$32fd8slk$6NP8htTZ1reXHsh.iFxoy0"
+    routers:
+        dashboard-api:
+            rule: Host(`traefik.labo.local`)
+            entryPoints:
+                - dashboard
+            service: api@internal
+            middlewares:
+                - pageauth
+            
+tls:
+    certificates:
+        - certFile: /cert.pem
+          keyFile: /privkey.pem
+    options:
+        default:
+            minVersion: VersionTLS12

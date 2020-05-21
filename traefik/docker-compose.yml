@@ -1,0 +1,25 @@
+version: '3.5'
+
+networks:
+  traefik:
+    name: traefik
+services:
+
+  traefik:
+        image: traefik:v2.2.0
+        container_name: traefik
+        restart: always
+        networks:
+        - traefik
+        ports:
+        - 80:80
+        - 443:443
+        - 8080:8080
+        volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+        - ./traefik.yml:/traefik.yml
+        - ./traefik_dynamic.yml:/traefik_dynamic.yml
+        - ./cert/fullchain.pem:/cert.pem
+        - ./cert/privkey.pem:/privkey.pem
+        - ./log:/var/log
